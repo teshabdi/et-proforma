@@ -102,6 +102,7 @@ return [
             'throttle' => 60,
         ],
         'admins' => [
+            'driver' => 'session',
             'provider' => 'admins',
             'table' => 'password_resets',
             'expire' => 60,

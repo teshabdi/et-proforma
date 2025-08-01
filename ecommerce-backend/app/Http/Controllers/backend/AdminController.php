@@ -4,25 +4,27 @@ namespace App\Http\Controllers\backend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
     public function login(Request $req)
     {
-        $credentials = $req->only('email','password');
-        if(Auth::guard('admin')->attempt($credentials, $req->remember))
-        {
-            return redirect()->route('dashboard');
+        $credentials = $req->only('email', 'password');
+
+        if (Auth::guard('admin')->attempt($credentials, $req->filled('remember'))) {
+            return redirect()->route('dashboard'); // send to dashboard
         }
-            return redirect()->route('admin.login')->with('status','Failed to login');
+
+        return back()->with('status', 'Invalid email or password.');
     }
+
     public function logout(Request $req)
     {
         Auth::guard('admin')->logout();
         $req->session()->invalidate();
         $req->session()->regenerateToken();
-        $req->session()->put('status', 'Successfully logout!');
+
         return redirect()->route('admin.login');
     }
 }

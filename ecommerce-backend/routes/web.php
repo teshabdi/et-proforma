@@ -5,6 +5,38 @@ use App\Http\Controllers\UserController;
 // use App\Http\Controllers\ProductController;
 // use App\Http\Controllers\backend\ProductManageController;
 // use App\Http\Controllers\backend\AdminController;
+use App\Http\Controllers\backend\AdminController;
+use App\Http\Controllers\backend\ProductManageController;
+use App\Http\Controllers\backend\AdminRegisterController;
+use Illuminate\Support\Facades\Auth;
+
+Route::prefix('admin')->group(function () {
+    Route::get('/register', [AdminRegisterController::class, 'showRegisterForm'])->name('admin.register');
+    Route::post('/register', [AdminRegisterController::class, 'register'])->name('admin.register.post');
+});
+
+
+Route::prefix('admin')->group(function () {
+    
+    // Guest-only routes
+    Route::middleware('admin.guest')->group(function () {
+        Route::view('/login', 'admin.login')->name('admin.login');
+        Route::post('/login', [AdminController::class, 'login'])->name('admin.auth');
+    });
+
+    // Authenticated-only routes
+    Route::middleware('admin.auth:admin')->group(function () {
+        Route::get('/dashboard', [ProductManageController::class, 'index'])->name('dashboard');
+        Route::get('/logout', [AdminController::class, 'logout'])->name('admin.logout');
+    });
+});
+
+/*if (Auth::guard('admin')->user()->role === 'supplier') {
+    return view('dashboard.supplier');
+} else {
+    return view('dashboard.producer');
+}
+*/
 /*
 |--------------------------------------------------------------------------
 | Web Routes
