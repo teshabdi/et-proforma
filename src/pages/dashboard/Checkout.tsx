@@ -30,10 +30,13 @@
      region: '',
      shippingCost: 0,
    });
+ }
 
 @@ .. @@
    if (items.length === 0) {
      return (
+     )
+   }
 -      <div className="container mx-auto px-4 py-8">
 -        <div className="text-center">
 +      <div className="space-y-6">
